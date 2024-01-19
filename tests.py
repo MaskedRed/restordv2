@@ -10,6 +10,10 @@ from openpyxl.utils import get_column_letter
 app = tk.Tk()
 app.title("Burritos_Norteños")
 
+font_stuff_20 = ('Helvetica', 10)
+font_stuff_25 = ('Helvetica', 14)
+font_stuff_30 = ('Helvetica', 15)
+font_bold_25 = 'Helvetica 13 bold'
 
 def combo_1(burrito=0, refresco=0, refill=0):
     n_combo_1 = 0
@@ -67,7 +71,7 @@ class Burritos:
         self.master = master
         self.master.title("Órdenes Restaurante")
         # Titulo
-        self.nombree = tk.Label(self.master, text="Burritos Norteños Punto de Venta", font='Helvetica 35 bold')
+        self.nombree = tk.Label(self.master, text="Burritos Norteños Punto de Venta", font='Helvetica 20 bold')
         self.nombree.pack()
         # Frame general
         self.framegen = tk.Frame(self.master)
@@ -83,7 +87,7 @@ class Burritos:
         self.orders_frame = tk.Frame(self.frameord)
         self.orders_frame.grid(padx=10, pady=10, column=0, row=0)
         self.no_orders = tk.Label(self.orders_frame, text='No hay órdenes activas por el momento', padx=10,
-                                  font=('Helvetica', 25))
+                                  font=font_stuff_25)
         # Frame botones abajo
         self.burriros = tk.Frame(self.botframe)
         self.burriros.grid(column=0, row=3)
@@ -91,19 +95,19 @@ class Burritos:
         # Boolean var para uber
         self.uber_var = tk.BooleanVar()
         self.uber_checkbutton = tk.Checkbutton(self.burriros, text="Uber", variable=self.uber_var,
-                                               font=('Helvetica', 25))
+                                               font=font_stuff_25)
         self.uber_checkbutton.pack(padx=10)
 
         # Boolean for rappi
         self.rappi_var = tk.BooleanVar()
         self.rappi_checkbutton = tk.Checkbutton(self.burriros, text="Rappi", variable=self.rappi_var,
-                                                font=('Helvetica', 25))
+                                                font=font_stuff_25)
         self.rappi_checkbutton.pack(padx=10)
 
         # Boolean for gratis
         self.gratis_var = tk.BooleanVar()
         self.gratis_checkbutton = tk.Checkbutton(self.burriros, text="Gratis", variable=self.gratis_var,
-                                                 font=('Helvetica', 25))
+                                                 font=font_stuff_25)
         self.gratis_checkbutton.pack(padx=10)
 
         # Diccionario de precios
@@ -124,7 +128,7 @@ class Burritos:
 
 
         # Lista combos
-        self.lista_combos = [combo_1, combo_2, combo_3]
+        self.lista_combos = [combo_3, combo_2, combo_1]
 
 
 
@@ -205,7 +209,7 @@ class Burritos:
             else:
                 freimm = tk.Frame(self.botframe)
                 freimm.grid(column=0, row=self.mainrow)
-                label = tk.Label(freimm, text=f'{tipo}', font=('Helvetiva', 30), fg='Red')
+                label = tk.Label(freimm, text=f'{tipo}', font=font_stuff_30, fg='Red')
                 label.grid(row=0, sticky=tk.W)
                 self.mainrow += 1
                 cosolista = [1, freimm, tipo]
@@ -219,7 +223,7 @@ class Burritos:
         else:
             freimm = tk.Frame(self.botframe)
             freimm.grid(column=0, row=self.mainrow)
-            label = tk.Label(freimm, text=f'{tipo}', font=('Helvetiva', 30), fg='Red')
+            label = tk.Label(freimm, text=f'{tipo}', font=font_stuff_30, fg='Red')
             label.grid(row=0, sticky=tk.W)
             self.mainrow += 1
             cosolista = [1, freimm, tipo]
@@ -290,7 +294,7 @@ class Burritos:
         for item, quantity in dict.items():
             if item in self.listatype[0]:
                 burritos += quantity
-            if item == 'Refresco':
+            if item == 'Refresco' or item == 'Boing':
                 refrescos += quantity
             if item == 'Refill':
                 refill += quantity
@@ -304,7 +308,7 @@ class Burritos:
         restante_fill = refill
 
         while (restante_burr // 2 >= 1 and (
-                restante_ref == restante_burr // 2 >= 1 or restante_fill == restante_burr // 2 >= 1)) \
+                restante_ref >= 1 or restante_fill >= 1)) \
                 or restante_burr // 4 >= 1 or restante_burr // 10 >= 1:
             stuff = []
             totales = []
@@ -322,11 +326,11 @@ class Burritos:
             else:
                 index_thing = totales.index(max(totales))
                 if index_thing == 0:
-                    self.n_combo_1 += stuff[index_thing][4]
+                    self.n_combo_3 += stuff[index_thing][4]
                 elif index_thing == 1:
                     self.n_combo_2 += stuff[index_thing][4]
                 elif index_thing == 2:
-                    self.n_combo_3 += stuff[index_thing][4]
+                    self.n_combo_1 += stuff[index_thing][4]
 
                 total_menos += stuff[index_thing][0]
                 restante_burr = stuff[index_thing][1]
@@ -341,16 +345,16 @@ class Burritos:
     # Crear botones
     def hacerbotones(self, nombre, frame, row):
         # Hace una label para los botones
-        label = tk.Label(frame, text=f'{nombre}: {self.count[nombre]}', font='Helvetica 25 bold')
+        label = tk.Label(frame, text=f'{nombre}: {self.count[nombre]}', font=font_bold_25)
         label.grid(row=row, column=0, padx=5)
 
         # Botones con comandos
         botonmas = tk.Button(frame, text='+', command=lambda: self.actualizar(label, self.ag_burros, nombre),
-                             font='Helvetica 25 bold')
+                             font=font_bold_25)
         botonmas.grid(row=row, column=1, padx=8)
 
         botonmenos = tk.Button(frame, text='-', command=lambda: self.actualizar(label, self.qu_burros, nombre),
-                               font='Helvetica 25 bold')
+                               font=font_bold_25)
         botonmenos.grid(row=row, column=2, padx=8)
 
         return label
@@ -423,41 +427,41 @@ class Burritos:
         in_order_frame = tk.Frame(order_frame)
         in_order_frame.pack(padx=15)
 
-        order_label = tk.Label(in_order_frame, text=order_text, padx=10, font='Helvetica 25', background='CadetBlue')
+        order_label = tk.Label(in_order_frame, text=order_text, padx=10, font=font_stuff_25, background='CadetBlue')
         order_label.pack(side=tk.LEFT)
 
         if uber:
-            uber_order_label = tk.Label(in_order_frame, text='(Uber)', padx=10, font=('Helvetica', 20),
+            uber_order_label = tk.Label(in_order_frame, text='(Uber)', padx=10, font=font_stuff_20,
                                         background='CadetBlue')
             uber_order_label.pack(side=tk.LEFT)
 
         if rappi:
-            rappi_order_label = tk.Label(in_order_frame, text='(rappi)', padx=10, font=('Helvetica', 20),
+            rappi_order_label = tk.Label(in_order_frame, text='(rappi)', padx=10, font=font_stuff_20,
                                          background='CadetBlue')
             rappi_order_label.pack(side=tk.LEFT)
 
         if gratis:
-            gratis_order_label = tk.Label(in_order_frame, text='(Gratis)', padx=10, font=('Helvetica', 20),
+            gratis_order_label = tk.Label(in_order_frame, text='(Gratis)', padx=10, font=font_stuff_20,
                                           background='CadetBlue')
             gratis_order_label.pack(side=tk.LEFT)
 
         edit_button = tk.Button(in_order_frame, text="Edit",
-                                command=lambda: self.mod_orden(order_frame, order_text), font=('Helvetica', 25))
+                                command=lambda: self.mod_orden(order_frame, order_text), font=font_stuff_25)
         edit_button.pack(side=tk.LEFT, padx=5)
 
         delete_button = tk.Button(in_order_frame, text="Delete",
-                                  command=lambda: self.borrar(order_frame, order_text), font=('Helvetica', 25))
+                                  command=lambda: self.borrar(order_frame, order_text), font=font_stuff_25)
         delete_button.pack(side=tk.LEFT, padx=5)
 
         finish_button = tk.Button(in_order_frame, text="Finalizar",
-                                  command=lambda: self.fin_orden(order_frame), font=('Helvetica', 25))
+                                  command=lambda: self.fin_orden(order_frame), font=font_stuff_25)
         finish_button.pack(side=tk.LEFT, padx=5)
 
         # Frame para display de los detalles
         detail_frame = tk.Frame(order_frame)
         detail_frame.pack(padx=8, pady=8)
 
-        detail_label = tk.Label(detail_frame, text=detail, padx=10, font=('Helvetica', 25))
+        detail_label = tk.Label(detail_frame, text=detail, padx=10, font=font_stuff_25)
         detail_label.pack(side=tk.LEFT)
 
         self.no_ord()
@@ -474,16 +478,20 @@ class Burritos:
             # Sumarlo a la lista de pedido para obtener valor modificado
             self.mod_count[name] = int(value) + int(self.lista[num_ped][i])
 
-        # Cantidad nueva
-        pedido = self.ordenar(self.mod_count)
 
         uber = 1 if self.uber_var.get() else 0
         rappi = 1 if self.rappi_var.get() else 0
         gratis = 1 if self.gratis_var.get() else 0
 
+        paquete1 = self.n_combo_1
+        paquete2 = self.n_combo_2
+        paquete3 = self.n_combo_3
+
+        pedido = self.ordenar(self.mod_count) if gratis == 0 else 0
+
         # Agregar nueva version a la lista de pedidos (sustituyendo la vieja)
-        self.lista[num_ped] = [self.mod_count[counter] for counter in self.mod_count.keys()] + \
-                              [uber] + [rappi] + [gratis] + [num_ped + 1] + [pedido]
+        self.lista[num_ped] = [self.mod_count[counter] for counter in self.mod_count.keys()] + [paquete1] + \
+        [paquete2] + [paquete3] + [uber] + [rappi] + [gratis] + [num_ped + 1] + [pedido]
 
         # Texto nuevo
         text_output = self.texto(self.mod_count)
@@ -519,12 +527,13 @@ class Burritos:
         num_ped = int(order_text.strip('Orden#')) - 1
 
         # Cambiar a solo ceros
-        self.lista[num_ped] = [0] * len(self.count) + [num_ped + 1] + [0]
+        self.lista[num_ped] = [0] * (len(self.count)) + ([0] * 8)
+        self.lista[num_ped][-2] = num_ped + 1
 
         order_frame.destroy()
 
         self.no_ord()
-
+        do_excel()
         self.clear()
 
     def cierre(self):  # Debe tener suma de self.ordenes[3], crear la listbox abajo
@@ -539,15 +548,15 @@ burr = Burritos(app)
 total_dia = 0
 
 # Ordenar
-boton_ordenar = tk.Button(burr.burriros, text='Agregar orden', command=burr.tomar_orden, font=('Helvetiva', 25))
+boton_ordenar = tk.Button(burr.burriros, text='Agregar orden', command=burr.tomar_orden, font=font_stuff_25)
 boton_ordenar.pack(side=tk.LEFT, padx=6, pady=6)
 
 # Limpiar valores
-boton_limpiar = tk.Button(burr.burriros, text='Limpiar', command=burr.clear, font=('Helvetiva', 25))
+boton_limpiar = tk.Button(burr.burriros, text='Limpiar', command=burr.clear, font=font_bold_25)
 boton_limpiar.pack(side=tk.RIGHT, padx=5, pady=5)
 
 # Cerrar el dia
-boton_ordenar = tk.Button(burr.burriros, text='Cerrar el día', command=burr.cierre, font=('Helvetiva', 25))
+boton_ordenar = tk.Button(burr.burriros, text='Cerrar el día', command=burr.cierre, font=font_stuff_25)
 boton_ordenar.pack(side=tk.LEFT, padx=6, pady=6)
 
 # Excel shit
