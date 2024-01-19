@@ -597,6 +597,17 @@ def do_excel():
         sheet.cell(i + 3, 8 + len(burr.count.keys())).value = total_total
         sheet.cell(i + 3, 1).value = 'Total'
 
+    for b, tipo in enumerate(burr.listatype):
+        mod_type = [element for element in burr.count.keys() if element in tipo]
+        total = 0
+        for col in sheet.iter_cols():
+            for cell in col:
+                if cell.value in mod_type:
+                    total += sheet.cell(i + 3, cell.col_idx).value
+
+        sheet.cell(i + 4, (2 * b) + 1).value = str(tipo[2])
+        sheet.cell(i + 4, (2 * b) + 2).value = total
+
     for n, cosos in enumerate(burr.lista):
         for m, coso in enumerate(cosos):
             sheetlista.cell(1 + n, 1 + m).value = coso
