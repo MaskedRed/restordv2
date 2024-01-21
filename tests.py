@@ -15,54 +15,60 @@ font_stuff_25 = ('Helvetica', 14)
 font_stuff_30 = ('Helvetica', 15)
 font_bold_25 = 'Helvetica 13 bold'
 
-def combo_1(burrito=0, refresco=0, refill=0):
-    n_combo_1 = 0
-    restante_ref = refresco
-    restante_fill = refill
-    if (burrito // 2) >= 1 and (refresco >= 1 or refill >= 1):
-        if refresco == 0:
-            n_combo_1 = min(refill, (burrito // 2))
-            restante_fill = refill - n_combo_1
-            combo_1_total = n_combo_1 * 2
+def combo_1(dictio, lista):
+    burritos = dictio['Burrito']
+    refrescos = dictio['Refresco']
+    refill = dictio['Refill']
+    dict_new = dictio.copy()
+
+
+    if dict_new['Finalizado'] == 0:
+        if burritos >= 2 and refrescos >= 1:
+            dict_new['Burrito'] -= 2
+            dict_new['Refresco'] -= 1
+            dict_new['Combo1'] += 1
+            dict_new['Ahorro'] += 11
+            lista.append(dict_new)
+
+        elif burritos >= 2 and refill >= 1:
+            dict_new['Burrito'] -= 2
+            dict_new['Refill'] -= 1
+            dict_new['Combo1'] += 1
+            dict_new['Ahorro'] += 2
+            lista.append(dict_new)
+
         else:
-            n_combo_1 = min(refresco, (burrito // 2))
-            restante_ref = refresco - n_combo_1
-            combo_1_total = n_combo_1 * 11
-        restante_burr = burrito % 2
+            dict_new['Finalizado'] = 1
+            lista.append(dict_new)
+            print('Hola')
 
-    else:
-        restante_burr = burrito
-        combo_1_total = 0
-        restante_ref = refresco
-        restante_fill = refill
+def combo_2(dictio, lista):
+    burritos = dictio['Burrito']
+    dict_new = dictio.copy()
 
-    return [combo_1_total, restante_burr, restante_ref, restante_fill, n_combo_1]
+    if dict_new['Finalizado'] == 0:
+        if burritos >= 4:
+            dict_new['Burrito'] -= 4
+            dict_new['Combo2'] += 1
+            dict_new['Ahorro'] += 15
+            lista.append(dict_new)
+        else:
+            dict_new['Finalizado'] = 1
+            lista.append(dict_new)
 
-def combo_2(burrito=0, refresco=0, refill=0):
-    n_combo_2 = 0
-    if (burrito // 4) >= 1:
-        n_combo_2 = burrito // 4
-        restante_burr = burrito % 4
-        combo_2_total = n_combo_2 * 15
-    else:
-        restante_burr = burrito
-        combo_2_total = 0
+def combo_3(dictio, lista):
+    burritos = dictio['Burrito']
+    dict_new = dictio.copy()
 
-
-    return [combo_2_total, restante_burr, refresco, refill, n_combo_2]
-
-def combo_3(burrito=0, refresco=0, refill=0):
-    n_combo_3 = 0
-    if (burrito // 10) >= 1:
-        n_combo_3 = burrito // 10
-        restante_burr = burrito % 10
-        combo_3_total = n_combo_3 * 45
-    else:
-        restante_burr = burrito
-        combo_3_total = 0
-
-
-    return [combo_3_total, restante_burr, refresco, refill, n_combo_3]
+    if dict_new['Finalizado'] == 0:
+        if burritos >= 10:
+            dict_new['Burrito'] -= 10
+            dict_new['Combo3'] += 1
+            dict_new['Ahorro'] += 45
+            lista.append(dict_new)
+        else:
+            dict_new['Finalizado'] = 1
+            lista.append(dict_new)
 
 
 
@@ -92,6 +98,8 @@ class Burritos:
         self.burriros = tk.Frame(self.botframe)
         self.burriros.grid(column=0, row=3)
 
+
+
         # Boolean var para uber
         self.uber_var = tk.BooleanVar()
         self.uber_checkbutton = tk.Checkbutton(self.burriros, text="Uber", variable=self.uber_var,
@@ -109,6 +117,8 @@ class Burritos:
         self.gratis_checkbutton = tk.Checkbutton(self.burriros, text="Gratis", variable=self.gratis_var,
                                                  font=font_stuff_25)
         self.gratis_checkbutton.pack(padx=10)
+
+
 
         # Diccionario de precios
         self.prices = {}
@@ -129,7 +139,8 @@ class Burritos:
 
         # Lista combos
         self.lista_combos = [combo_3, combo_2, combo_1]
-
+        # Lista combinaciones combos
+        self.lista_totales = []
 
 
         # Suma del dia
@@ -144,10 +155,10 @@ class Burritos:
         # Aquí se agregan las label para manipularlas (para que se actualize el contador en pantalla)
         self.productos = []
 
-        # Label Burritos
-        # self.labelburros = tk.Label(self.burrframe, text="Burritos", font=('Helvetiva', 20))
-        # Row burros
         self.mainrow = 0
+
+
+
 
         # Introducir productos aqui (self.input_prod(Nombre, precio, tipo) tipo debe ser consistente
         self.input_prod('Asada', 45, 'Burritos')
@@ -287,6 +298,7 @@ class Burritos:
         refill = 0
         total_menos = 0
 
+        self.lista_totales.clear()
         self.n_combo_3 = 0
         self.n_combo_2 = 0
         self.n_combo_1 = 0
@@ -299,48 +311,52 @@ class Burritos:
             if item == 'Refill':
                 refill += quantity
 
+        dict_total = {
+            'Burrito': 0,
+            'Refresco': 0,
+            'Refill': 0,
+            'Combo1': 0,
+            'Combo2': 0,
+            'Combo3': 0,
+            'Ahorro': 0,
+            'Finalizado': 0
+        }
+        dict_total['Burrito'] = burritos
+        dict_total['Refresco'] = refrescos
+        dict_total['Refill'] = refill
+        self.lista_totales.append(dict_total)
+
+        while True:
+            all_finalizado = all(totales['Finalizado'] == 1 for totales in self.lista_totales)
+            if all_finalizado:
+                break
+
+            for totales in self.lista_totales.copy():
+                for combo in self.lista_combos:
+                    combo(totales, self.lista_totales)
+                self.lista_totales.remove(totales)
+
+        new_list_totales = [totales['Ahorro'] for totales in self.lista_totales]
+        index_lis = new_list_totales.index(max(new_list_totales))
+
+        # Seleccionado el maximo
+        dict_seleccionado = self.lista_totales[index_lis]
+        print(dict_seleccionado)
+
+        ahorro = dict_seleccionado['Ahorro']
+        self.n_combo_1 = dict_seleccionado['Combo1']
+        self.n_combo_2 = dict_seleccionado['Combo2']
+        self.n_combo_3 = dict_seleccionado['Combo3']
+
+
         for item, price in self.prices.items():
             quantity = dict.get(item, 0)  # Get the quantity or default to 0 if not found
             total += price * quantity
 
-        restante_burr = burritos
-        restante_ref = refrescos
-        restante_fill = refill
 
-        while (restante_burr // 2 >= 1 and (
-                restante_ref >= 1 or restante_fill >= 1)) \
-                or restante_burr // 4 >= 1 or restante_burr // 10 >= 1:
-            stuff = []
-            totales = []
+        print(f'Uno: {self.n_combo_1}, Dos: {self.n_combo_2}, Tres: {self.n_combo_3}')
 
-            for func in self.lista_combos:
-                stuff.append(func(burrito=restante_burr, refresco=restante_ref, refill=restante_fill))
-            for coso in stuff:
-                totales.append(coso[0])
-
-            print(max(totales))
-            if max(totales) == 0:
-                total_menos = 0
-                break
-
-            else:
-                index_thing = totales.index(max(totales))
-                if index_thing == 0:
-                    self.n_combo_3 += stuff[index_thing][4]
-                elif index_thing == 1:
-                    self.n_combo_2 += stuff[index_thing][4]
-                elif index_thing == 2:
-                    self.n_combo_1 += stuff[index_thing][4]
-
-                total_menos += stuff[index_thing][0]
-                restante_burr = stuff[index_thing][1]
-                restante_ref = stuff[index_thing][2]
-                restante_fill = stuff[index_thing][3]
-        print(total_menos)
-
-        print(f'1: {self.n_combo_1}, 2: {self.n_combo_2}, 3: {self.n_combo_3}')
-
-        return total - total_menos
+        return total - ahorro
 
     # Crear botones
     def hacerbotones(self, nombre, frame, row):
@@ -546,6 +562,7 @@ class Burritos:
 
 burr = Burritos(app)
 total_dia = 0
+
 
 # Ordenar
 boton_ordenar = tk.Button(burr.burriros, text='Agregar orden', command=burr.tomar_orden, font=font_stuff_25)
